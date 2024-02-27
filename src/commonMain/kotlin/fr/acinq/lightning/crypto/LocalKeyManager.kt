@@ -36,6 +36,7 @@ import fr.acinq.lightning.crypto.LocalKeyManager.Companion.channelKeyPath
 data class LocalKeyManager(val seed: ByteVector, val chain: Chain, val remoteSwapInExtendedPublicKey: String) : KeyManager {
 
     private val master = DeterministicWallet.generate(seed)
+    private val masterDescriptor = ActualExtendedPrivateKeyDescriptor(master)
 
     override val nodeKeys: KeyManager.NodeKeys = KeyManager.NodeKeys(
         legacyNodeKey = @Suppress("DEPRECATION") derivePrivateKey(master, eclairNodeKeyBasePath(chain)),
@@ -51,7 +52,7 @@ data class LocalKeyManager(val seed: ByteVector, val chain: Chain, val remoteSwa
         }
         require(prefix == expectedPrefix) { "unexpected swap-in xpub prefix $prefix (expected $expectedPrefix)" }
         val remoteSwapInPublicKey = DeterministicWallet.derivePublicKey(xpub, KeyManager.SwapInOnChainKeys.perUserPath(nodeKeys.nodeKey.publicKey)).publicKey
-        KeyManager.SwapInOnChainKeys(chain, master, remoteSwapInPublicKey)
+        KeyManager.SwapInOnChainKeys(chain, masterDescriptor,  remoteSwapInPublicKey)
     }
 
     private val channelKeyBasePath: KeyPath = channelKeyBasePath(chain)
@@ -174,6 +175,18 @@ data class LocalKeyManager(val seed: ByteVector, val chain: Chain, val remoteSwa
 
         override fun publicKey(): PublicKey {
             return instantiate().publicKey()
+        }
+    }
+    class ActualExtendedPrivateKeyDescriptor(val master: DeterministicWallet.ExtendedPrivateKey) : ExtendedPrivateKeyDescriptor{
+        override fun instantiate(): DeterministicWallet.ExtendedPrivateKey {
+            return master
+        }
+        override fun publicKey(): DeterministicWallet.ExtendedPublicKey {
+            return DeterministicWallet.publicKey(instantiate())
+        }
+
+        override fun derivePrivateKey(index: Long): PrivateKeyDescriptor {
+            return KeyManager.SwapInOnChainKeys.LocalFromExtendedPrivateKeyDescriptor(this, index)
         }
     }
 }
