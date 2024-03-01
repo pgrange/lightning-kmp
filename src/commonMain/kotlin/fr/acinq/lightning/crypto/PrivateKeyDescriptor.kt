@@ -44,7 +44,7 @@ interface PrivateKeyDescriptor {
      * @param sighash              signature hash type, which will be appended to the signature
      * @return the encoded signature of this tx for this specific tx input
      */
-    abstract fun sign(tx: Transaction, inputIndex: Int, redeemScript: ByteArray, amount: Satoshi, sighash: Int = SigHash.SIGHASH_ALL): ByteVector64
+    fun sign(tx: Transaction, inputIndex: Int, redeemScript: ByteArray, amount: Satoshi, sighash: Int = SigHash.SIGHASH_ALL): ByteVector64
 
     /**
      * sign a tx input
@@ -55,7 +55,7 @@ interface PrivateKeyDescriptor {
      * @param sighash              signature hash type, which will be appended to the signature
      * @return the encoded signature of this tx
      */
-    abstract fun sign(txInfo: Transactions.TransactionWithInputInfo, sighash: Int = SigHash.SIGHASH_ALL): ByteVector64
+    fun sign(txInfo: Transactions.TransactionWithInputInfo, sighash: Int = SigHash.SIGHASH_ALL): ByteVector64
 
     /**
      * Sign a taproot tx input, using one of its script paths.
@@ -67,7 +67,7 @@ interface PrivateKeyDescriptor {
      * @param tapleaf tapscript leaf hash of the script that is being spent.
      * @return the schnorr signature of this tx for this specific tx input and the given script leaf.
      */
-    abstract fun signInputTaprootScriptPath(tx: Transaction, inputIndex: Int, inputs: List<TxOut>, sigHash: Int, tapleaf: ByteVector32): ByteVector64
+    fun signInputTaprootScriptPath(tx: Transaction, inputIndex: Int, inputs: List<TxOut>, sigHash: Int, tapleaf: ByteVector32): ByteVector64
 
     /**
      * Create a partial musig2 signature for the given taproot input key path.
@@ -80,6 +80,11 @@ interface PrivateKeyDescriptor {
      * @param publicNonces public nonces of all participants of the musig2 session.
      * @param scriptTree tapscript tree of the taproot input, if it has script paths.
      */
-    abstract fun signMusig2TaprootInput(tx: Transaction, index: Int, inputs: List<TxOut>, publicKeys: List<PublicKey>, secretNonce: SecretNonce, publicNonces: List<IndividualNonce>, scriptTree: ScriptTree.Leaf): Either<Throwable, ByteVector32>
+    fun signMusig2TaprootInput(tx: Transaction, index: Int, inputs: List<TxOut>, publicKeys: List<PublicKey>, secretNonce: SecretNonce, publicNonces: List<IndividualNonce>, scriptTree: ScriptTree.Leaf): Either<Throwable, ByteVector32>
 
+    /**
+     * @param sessionId a random, unique session ID.
+     * @param publicKeys public keys of all participants: callers must verify that all public keys are valid.
+     */
+    fun generateMusig2Nonce(sessionId: ByteVector32, publicKeys: List<PublicKey>): Pair<SecretNonce, IndividualNonce>
 }
