@@ -10,6 +10,7 @@ import fr.acinq.lightning.DefaultSwapInParams
 import fr.acinq.lightning.blockchain.fee.FeeratePerKw
 import fr.acinq.lightning.crypto.local.DerivedExtendedPrivateKeyDescriptor
 import fr.acinq.lightning.crypto.local.FromExtendedPrivateKeyDescriptor
+import fr.acinq.lightning.crypto.local.LocalPrivateKeyDescriptor
 import fr.acinq.lightning.transactions.SwapInProtocol
 import fr.acinq.lightning.transactions.SwapInProtocolLegacy
 import fr.acinq.lightning.transactions.Transactions

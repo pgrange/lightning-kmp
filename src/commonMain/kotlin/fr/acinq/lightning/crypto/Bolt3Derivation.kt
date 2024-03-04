@@ -4,8 +4,6 @@ import fr.acinq.bitcoin.ByteVector32
 import fr.acinq.bitcoin.Crypto.sha256
 import fr.acinq.bitcoin.PrivateKey
 import fr.acinq.bitcoin.PublicKey
-import fr.acinq.lightning.crypto.local.Bolt3CommitmentKeyDescriptor
-import fr.acinq.lightning.crypto.local.Bolt3RevocationKeyDescriptor
 
 /**
  * BOLT 3 Key derivation scheme.
