@@ -4,10 +4,11 @@ import fr.acinq.bitcoin.DeterministicWallet
 import fr.acinq.bitcoin.KeyPath
 import fr.acinq.lightning.crypto.ExtendedPrivateKeyDescriptor
 import fr.acinq.lightning.crypto.PrivateKeyDescriptor
+import fr.acinq.lightning.crypto.div
 
-class LedgerMasterKey(private val client: LedgerClient, private val path: KeyPath) : ExtendedPrivateKeyDescriptor {
+class LedgerExtendedKey(private val client: LedgerClient, private val path: KeyPath) : ExtendedPrivateKeyDescriptor {
     override fun privateKey(): PrivateKeyDescriptor {
-        TODO("Not yet implemented")
+        return LedgerPrivateKey(client, path)
     }
 
     override fun publicKey(): DeterministicWallet.ExtendedPublicKey {
@@ -15,15 +16,14 @@ class LedgerMasterKey(private val client: LedgerClient, private val path: KeyPat
     }
 
     override fun derive(path: KeyPath): ExtendedPrivateKeyDescriptor {
-        TODO("Not yet implemented")
+        return LedgerExtendedKey(client, this.path / path)
     }
 
     override fun derivePrivateKey(index: Long): PrivateKeyDescriptor {
-        TODO("Not yet implemented")
+        return LedgerPrivateKey(client, this.path / index)
     }
 
     override fun derivePrivateKey(path: KeyPath): PrivateKeyDescriptor {
-        TODO("Not yet implemented")
+        return LedgerPrivateKey(client, this.path / path)
     }
-
 }

@@ -20,11 +20,10 @@ import fr.acinq.bitcoin.utils.Either
 import fr.acinq.lightning.crypto.PrivateKeyDescriptor
 import fr.acinq.lightning.transactions.Transactions
 
-class LedgerPrivateKey(private val masterFingerprint: String, private val path: KeyPath) : PrivateKeyDescriptor {
+class LedgerPrivateKey(private val client: LedgerClient, private val path: KeyPath) : PrivateKeyDescriptor {
 
     override fun publicKey(): PublicKey {
-        // tpubDDKYE6BREvDsSWMazgHoyQWiJwYaDDYPbCFjYxN3HFXJP5fokeiK4hwK5tTLBNEDBwrDXn8cQ4v9b2xdW62Xr5yxoQdMu1v6c7UDXYVH27U
-        TODO("Not yet implemented")
+        return client.getExtendedPublicKey(path).publicKey
     }
 
     override fun deriveForRevocation(perCommitSecret: PrivateKey): PrivateKeyDescriptor {
